@@ -4,7 +4,11 @@
     Tampil Genre
 @endsection
 @section('content')
-    <a href="/genres/create" class="btn btn-lg btn-primary">Tambah Data Genre</a>
+    @auth
+        @if (auth()->user()->role === 'admin')
+            <a href="/genres/create" class="btn btn-lg btn-primary">Tambah Data Genre</a>
+        @endif
+    @endauth
 
     <h1 class="mt-5 mb-2">Daftar Genre</h1>
 
@@ -22,13 +26,18 @@
                     <th scope="row">{{ $loop->iteration }}</th>
                     <td>{{ $genre->name }}</td>
                     <td>
-                        <form action="/genres/{{ $genre->id }}" method="post" class="d-inline" onsubmit="return confirm('Apakah kamu yakin ingin menghapus data ini?')">
+                        <form action="/genres/{{ $genre->id }}" method="post" class="d-inline"
+                            onsubmit="return confirm('Apakah kamu yakin ingin menghapus data ini?')">
                             @method('delete')
                             @csrf
                             <a href="/genres/{{ $genre->id }}" class="btn btn-info">Detail</a>
-                            <a href="/genres/{{ $genre->id }}/edit" class="btn btn-warning">Edit</a>
+                            @auth()
+                                @if (auth()->user()->role === 'admin')
+                                <a href="/genres/{{ $genre->id }}/edit" class="btn btn-warning">Edit</a>
 
-                            <button type="submit" class="btn btn-danger">Delete</button>
+                                <button type="submit" class="btn btn-danger">Delete</button>
+                                @endif
+                            @endauth
                         </form>
                     </td>
                 </tr>
